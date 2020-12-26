@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #############################
 #Funcion para calcular el spread y la medio de un ensamble de n miembros
-#Martin Iglesias Github SudestadaARG
+##Martin Iglesias Github SudestadaARG
 ####################################
 
 import numpy as np

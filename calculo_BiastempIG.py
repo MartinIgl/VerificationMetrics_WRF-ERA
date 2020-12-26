@@ -90,16 +90,16 @@ contador = 0
 while m < len(M):
 
 
-	#geo_total = np.ma.empty(( tiempos, 12, 83, 91 )) #dominio de grafico
-	#u_total = np.ma.empty(( tiempos, 12, 83, 91 ))
-	#v_total = np.ma.empty(( tiempos, 12, 83, 91 ))
-	#t_total = np.ma.empty(( tiempos, 12, 83, 91 ))
-	#q_total = np.ma.empty(( tiempos, 12, 83, 91 ))
-	#psfc_total = np.ma.empty(( tiempos, 12, 83, 91 ))
+	geo_total = np.ma.empty(( tiempos, 12, 83, 91 )) #dominio de grafico
+	u_total = np.ma.empty(( tiempos, 12, 83, 91 ))
+	v_total = np.ma.empty(( tiempos, 12, 83, 91 ))
+	t_total = np.ma.empty(( tiempos, 12, 83, 91 ))
+	q_total = np.ma.empty(( tiempos, 12, 83, 91 ))
+	psfc_total = np.ma.empty(( tiempos, 12, 83, 91 ))
 
-	u_total = np.ma.empty(( tiempos, 12, 51, 29 ))
-	v_total = np.ma.empty(( tiempos, 12, 51, 29 ))
-	q_total = np.ma.empty(( tiempos, 12, 51, 29 ))
+	#u_total = np.ma.empty(( tiempos, 12, 51, 29 ))
+	#v_total = np.ma.empty(( tiempos, 12, 51, 29 ))
+	#q_total = np.ma.empty(( tiempos, 12, 51, 29 ))
 
 	contador = -1
 	d = datetime(Y,Mo,D,H)
@@ -134,12 +134,12 @@ while m < len(M):
 			geodif = np.ma.load( path_in + '/' + M[m] + '/geopt_dif_era-upp_' + YY + MM + DD + HH + FCST)
 
 
-        	geo_total[contador,:,:,:] = geodif[:,20:71,73:102]
-        	u_total[contador,:,:,:] = udif[:,20:71,73:102]
-		v_total[contador,:,:,:] = vdif[:,20:71,73:102]
-        	t_total[contador,:,:,:] = tdif[:,20:71,73:102]
-		q_total[contador,:,:,:] = qdif[:,20:71,73:102]
-		psfc_total[contador,:,:] = pdif[20:71,73:102]
+        	geo_total[contador,:,:,:] = geodif[:,20:103,31:122]
+        	u_total[contador,:,:,:] = udif[:,20:103,31:122]
+		v_total[contador,:,:,:] = vdif[:,20:103,31:122]
+        	t_total[contador,:,:,:] = tdif[:,20:103,31:122]
+		q_total[contador,:,:,:] = qdif[:,20:103,31:122]
+		psfc_total[contador,:,:] = pdif[20:103,31:102]
 
 		d = d + delta
 	# ----------------------------------------------------------

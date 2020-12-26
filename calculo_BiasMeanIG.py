@@ -1,9 +1,7 @@
 #!/usr/bin/env python
-
+#Martin Iglesias Github SudestadaARG
 # Programa para calcular el Bias, usando matrices diferencia hechas previamente
-#
-#Martin Iglesias. @SudestadaARG
-#
+
 # Voy a necesitar:
 #
 # -- Las diferencias de las variables de sfc que fueron almacenadas asi:

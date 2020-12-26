@@ -36,11 +36,44 @@ if exp == 'GFS' or exp == 'GEFS':
 	FCST =  '_' + args.FCST
 else:
 	FCST = '.' + args.FCST
+# Caminos de los archivos:
 
-
-
-path_upp = '/data/miglesias/verificacion_CE/variables_WRF_UPP_interpoladas'
-
+if exp == 'connud':
+	path_upp = '/data/miglesias/verificacion_doc/variables_WRF_UPP_interpoladas'	
+	if periodo=='2meses':
+		periodo='_'+periodo
+	else:
+		periodo=''
+elif exp == 'sinnud':
+	path_upp = '/data/miglesias/verificacion_doc/variables_WRF_UPP_interpoladas_sinnud'
+	if periodo=='2meses':
+		periodo='_'+periodo
+	else:
+		periodo=''
+elif exp == 'spnud6h':
+	path_upp = '/data/miglesias/verificacion_doc/variables_WRF_UPP_interpoladas_spnud6h'
+	if periodo=='2meses':
+		periodo='_'+periodo
+	else:
+		periodo=''
+elif exp == 'spnudUV6h':
+	path_upp = '/data/miglesias/verificacion_doc/variables_WRF_UPP_interpoladas_SPnudUV6h'
+	if periodo=='2meses':
+		periodo='_'+periodo
+	else:
+		periodo=''
+elif exp == 'GEFS':
+	path_upp = '/data/miglesias/verificacion_doc/variables_GEFS'
+	if periodo=='2meses':
+		periodo='_'+periodo
+	else:
+		periodo=''
+elif exp == 'GFS':
+	path_upp = '/data/miglesias/verificacion_doc/variables_GEFS/deterministico'
+	if periodo=='2meses':
+		periodo='_'+periodo
+	else:
+		periodo=''
 
 exp =  '/' + args.Exp
 path_salida = '/data/miglesias/verificacion_doc/MSPWRFupp' + exp 
@@ -73,54 +106,49 @@ u_M = np.ma.empty(( len(vertical_levels), 110, 160 , len(MEM) ))
 v_M = np.ma.empty(( len(vertical_levels), 110, 160 , len(MEM) ))
 psfc_M = np.ma.empty(( 110, 160 , len(MEM) ))
 
-
-
-day=datetime(2015,12,19,00)
-delta = timedelta(hours=6)
-i=0
-f=17
-while i <= f:
-#cambiar los fcst como en la lectura inicial coregir. ver las dmas cosas
-
-	while m < len(MEM):	# m < 20
-		if exp == '/GFS':
-			# ------Geopotencial------
-			geopt_M[:,:,:,m] = np.ma.load(path_upp + '/geopt_GFS_20151219_00'  + FCST )	
-			# ------Temperatura------
-			tk_M[:,:,:,m]= np.ma.load(path_upp + '/tk_GFS_' + YY + MM + DD + HH + FCST )
-			# ------Humedad especifica------
-			q_M[:,:,:,m]= np.ma.load(path_upp + '/q_GFS_' + YY + MM + DD + HH + FCST )
-			# ------Viento: componentes U y V------
-			u_M[:,:,:,m]= np.ma.load(path_upp + '/u_GFS_' + YY + MM + DD + HH + FCST )
-			v_M[:,:,:,m]= np.ma.load(path_upp + '/v_GFS_'+ YY + MM + DD + HH + FCST )
-			# ------PSFC------
-			psfc_M[:,:,m]= np.ma.load(path_upp + '/psfc_GFS_'+ YY + MM + DD + HH + FCST )
-		elif exp == '/GEFS':
-			# ------Geopotencial------	
-			geopt_M[:,:,:,m] = np.ma.load(path_upp + '/' + MEM[m] + '/geopt_gefs_' + YY + MM + DD + HH + FCST )	
-			# ------Temperatura------
-			tk_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/tk_gefs_' + YY + MM + DD + HH + FCST )
-			# ------Humedad especifica------
-			q_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/q_gefs_' + YY + MM + DD + HH + FCST )
-			# ------Viento: componentes U y V------
-			u_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/u_gefs_' + YY + MM + DD + HH + FCST )
-			v_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/v_gefs_'+ YY + MM + DD + HH + FCST )
-			# ------PSFC------
-			psfc_M[:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/psfc_gefs_'+ YY + MM + DD + HH + FCST )
-		else:
-			# ------Geopotencial------	
-			geopt_M[:,:,:,m] = np.ma.load(path_upp + '/' + MEM[m] + '/geopt_upp_' + YY + MM + DD + HH + FCST )	
-			# ------Temperatura------
-			tk_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/tk_upp_' + YY + MM + DD + HH + FCST )
-			# ------Humedad especifica------
-			q_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/q_upp_' + YY + MM + DD + HH + FCST )
-			# ------Viento: componentes U y V------
-			u_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/u_upp_' + YY + MM + DD + HH + FCST )
-			v_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/v_upp_'+ YY + MM + DD + HH + FCST )
-			# ------PSFC------
-			psfc_M[:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/psfc_upp_'+ YY + MM + DD + HH + FCST )
-		m = m + 1	# Loop de los miembros
-		day = day + delta
+while m < len(MEM):	# m < 20
+	# Nombre de fecha para abrir:
+	YY = str(d.year)
+	MM = str(d.month).zfill(2)
+	DD = str(d.day).zfill(2)
+	HH = str(d.hour).zfill(2)
+	if exp == '/GFS':
+		# ------Geopotencial------
+		geopt_M[:,:,:,m] = np.ma.load(path_upp + '/geopt_GFS_' + YY + MM + DD + HH + FCST )	
+		# ------Temperatura------
+		tk_M[:,:,:,m]= np.ma.load(path_upp + '/tk_GFS_' + YY + MM + DD + HH + FCST )
+		# ------Humedad especifica------
+		q_M[:,:,:,m]= np.ma.load(path_upp + '/q_GFS_' + YY + MM + DD + HH + FCST )
+		# ------Viento: componentes U y V------
+		u_M[:,:,:,m]= np.ma.load(path_upp + '/u_GFS_' + YY + MM + DD + HH + FCST )
+		v_M[:,:,:,m]= np.ma.load(path_upp + '/v_GFS_'+ YY + MM + DD + HH + FCST )
+		# ------PSFC------
+		psfc_M[:,:,m]= np.ma.load(path_upp + '/psfc_GFS_'+ YY + MM + DD + HH + FCST )
+	elif exp == '/GEFS':
+		# ------Geopotencial------	
+		geopt_M[:,:,:,m] = np.ma.load(path_upp + '/' + MEM[m] + '/geopt_gefs_' + YY + MM + DD + HH + FCST )	
+		# ------Temperatura------
+		tk_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/tk_gefs_' + YY + MM + DD + HH + FCST )
+		# ------Humedad especifica------
+		q_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/q_gefs_' + YY + MM + DD + HH + FCST )
+		# ------Viento: componentes U y V------
+		u_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/u_gefs_' + YY + MM + DD + HH + FCST )
+		v_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/v_gefs_'+ YY + MM + DD + HH + FCST )
+		# ------PSFC------
+		psfc_M[:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/psfc_gefs_'+ YY + MM + DD + HH + FCST )
+	else:
+		# ------Geopotencial------	
+		geopt_M[:,:,:,m] = np.ma.load(path_upp + '/' + MEM[m] + '/geopt_upp_' + YY + MM + DD + HH + FCST )	
+		# ------Temperatura------
+		tk_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/tk_upp_' + YY + MM + DD + HH + FCST )
+		# ------Humedad especifica------
+		q_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/q_upp_' + YY + MM + DD + HH + FCST )
+		# ------Viento: componentes U y V------
+		u_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/u_upp_' + YY + MM + DD + HH + FCST )
+		v_M[:,:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/v_upp_'+ YY + MM + DD + HH + FCST )
+		# ------PSFC------
+		psfc_M[:,:,m]= np.ma.load(path_upp + '/' + MEM[m] + '/psfc_upp_'+ YY + MM + DD + HH + FCST )
+	m = m + 1	# Loop de los miembros
 
 
 
@@ -134,12 +162,12 @@ tk_mean = np.ma.mean(tk_M,axis=3)
 psfc_mean = np.ma.mean(psfc_M,axis=2) ## OJO QUE LA PSFC TIENE UNA DIMENSION MENOS, VA A SER AXIS=2
 
 # Solo necesito una subseleccion de lat-lon que incluya la region, no me interesa el globo entero:
-np.ma.dump(geopt_mean, path_salida  + '/geopt_mean_' + YY + MM + DD + HH + FCST )
-np.ma.dump(tk_mean, path_salida  + '/tk_mean_'+ YY + MM + DD + HH + FCST )
-np.ma.dump(q_mean, path_salida  + '/q_mean_' + YY + MM + DD + HH + FCST )
-np.ma.dump(u_mean, path_salida  + '/u_mean_' + YY + MM + DD + HH + FCST)
-np.ma.dump(v_mean, path_salida + '/v_mean_' + YY + MM + DD + HH + FCST )
-np.ma.dump(psfc_mean, path_salida  + '/psfc_mean_' + YY + MM + DD + HH + FCST )
+np.ma.dump(geopt_mean, path_salida  + '/geopt_mean_' + YY + MM + DD + HH +periodo+ FCST )
+np.ma.dump(tk_mean, path_salida  + '/tk_mean_'+ YY + MM + DD + HH +periodo+ FCST )
+np.ma.dump(q_mean, path_salida  + '/q_mean_' + YY + MM + DD + HH +periodo+ FCST )
+np.ma.dump(u_mean, path_salida  + '/u_mean_' + YY + MM + DD + HH +periodo+ FCST)
+np.ma.dump(v_mean, path_salida + '/v_mean_' + YY + MM + DD + HH +periodo+ FCST )
+np.ma.dump(psfc_mean, path_salida  + '/psfc_mean_' + YY + MM + DD + HH +periodo+ FCST )
 	
 geopt_M = 0
 v_M = 0
